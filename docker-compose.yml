@@ -1,0 +1,34 @@
+services:
+  careacross-backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+      args:
+        - USER_ID=1000  # Replace with your host user's UID (run `id -u` to check)
+        - GROUP_ID=1000 # Replace with your host user's GID (run `id -g` to check)
+    container_name: careacross-backend
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    depends_on:
+      - careacross-postgres
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      
+  careacross-postgres:
+    image: postgres:16.4
+    container_name: careacross-postgres
+    environment:
+      POSTGRES_DB: careacross_db
+      POSTGRES_USER: careacross_admin
+      POSTGRES_PASSWORD: careacross_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
