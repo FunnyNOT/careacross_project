@@ -13,10 +13,48 @@ dependencies = [
     "django (>=4.2,<5.0)",
     "python-decouple (>=3.8,<4.0)",
     "dj-database-url (>=2.3.0,<3.0.0)",
-    "psycopg2-binary (>=2.9.10,<3.0.0)"
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "requests (>=2.32.3,<3.0.0)"
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.0"
+ruff = "^0.9.5"
+
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+combine_as_imports = true
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+fix = true
+unsafe-fixes = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]  # Enable common error and import sorting checks
+ignore = ["E501"]  # Ignore line-length errors since Black handles it
+
+[tool.ruff.lint.isort]
+known-first-party = ["your_project_name"]
