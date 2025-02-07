@@ -47,13 +47,28 @@ resetdb:  ## Remove volumes, then re-up (DESTROYS local DB data!)
 	docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
 
 migrate:  ## Run Django migrations inside the backend container
-	docker-compose -f $(DOCKER_COMPOSE_FILE) exec backend poetry run python manage.py migrate
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run python manage.py migrate
+
+makemigrations:  ## Run Django migrations inside the backend container
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run python manage.py makemigrations
 
 collectstatic:  ## Collect Django static files inside the backend container
-	docker-compose -f $(DOCKER_COMPOSE_FILE) exec backend poetry run python manage.py collectstatic --noinput
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run python manage.py collectstatic --noinput
 
 shell:  ## Open a Bash shell in the django container
-	docker-compose -f $(DOCKER_COMPOSE_FILE) exec django bash
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend bash
 
-dbshell:  ## Open psql shell in the db container (adjust user/db if needed)
-	docker-compose -f $(DOCKER_COMPOSE_FILE) exec db psql -U careacross_admin -d careacross-backend
+dbshell:  ## Open psql shell in the db container
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-postgres psql -U careacross_admin -d careacross_db
+
+format:  ## Run Black and Isort inside the backend container
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run black .
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run isort .
+
+lint:  ## Run Ruff inside the backend container
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run ruff check .
+
+format_lint: format lint  ## Run format and lint in one go
+
+test:  ## Run Ruff inside the backend container
+	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run python manage.py test

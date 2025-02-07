@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task List</title>
+  <!-- Link to the external CSS file -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <!-- Header: Title and Tabs -->
+    <div class="header">
+      <h1 class="task-title">Task list</h1>
+      <div class="tabs">
+        <a href="?filter=all" class="tab {% if current_filter == 'all' %}active{% endif %}" data-filter="all">
+          All ({{ total_todos }})
+        </a>
+        <a href="?filter=todo" class="tab {% if current_filter == 'todo' %}active{% endif %}" data-filter="todo">
+          To-do ({{ uncompleted_todos }})
+        </a>
+        <a href="?filter=complete" class="tab {% if current_filter == 'complete' %}active{% endif %}" data-filter="complete">
+          Complete ({{ completed_todos }})
+        </a>
+      </div>
+    </div>
+
+    <!-- Task List Container -->
+    {% if not todos %}
+      <div class="empty">
+        <image src="{% static 'images/no_data/tumbleweed.png' %}"></image>
+      </div>
+    {% endif %} 
+    <div id="task-container">
+      {% for todo in todos %}
+        <div class="task" data-completed="{{ todo.completed }}">
+          <div class="main_section">
+            <div class="check {% if todo.completed %}completed{% endif %}"></div>
+            <div class="text_block">
+              <div class="title {% if todo.completed %}completed{% endif %}">{{ todo.title }}</div>
+              <div class="user">
+                <img class="image" src="{% static 'images/' %}{{ todo.image }}.png" alt="User Image"/>
+                <div class="user_ID"># {{ todo.user_id }}</div>
+              </div>
+            </div>        
+          </div>
+          <div class="divider"></div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Load More Button -->
+    {% if page_obj.has_next %}
+      <div class="load_more">
+        <button id="load-more" data-next-page="{{ page_obj.next_page_number }}">
+          <image src="{% static 'svg/arrow_icon.svg' %}"></image>
+          <span class="load_more_text">Load more</span>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  <script src="{% static 'js/todos.js' %}"></script>
+</body>
+</html>
+

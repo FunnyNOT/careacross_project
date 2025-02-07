@@ -1,0 +1,574 @@
+
+/* Global body styles */
+body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #FFF8F6;
+}
+
+/* Centering container with top spacing */
+.container {
+    width: 100%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 5%;  /* top spacing */
+    margin-bottom: 10%; /* bottom spacing if you want it */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Task title (Frame 2 / "Task list") */
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-weight: 700;
+}
+
+#task-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.task-title {
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 36px;
+    color: #534340;
+    margin: 0;
+}
+
+.empty {
+  /* Tumbleweed auto-layout from your snippet */
+  position: flex;
+  display: flex;
+  padding-top: 180px;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 20px; */
+}
+
+/* Tabs container (Frame 2 / "tabs") */
+.tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 271px;
+    height: 40px;
+    white-space: nowrap; /* Prevent text from breaking */
+    overflow: visible; /* Ensure it doesn't break layout */
+    flex-wrap: nowrap; /* Prevents the tabs from moving to the next line */
+}
+/* Each tab */
+.tab {
+    display: flex;
+    flex-direction: column; /* Could also be row, but column+center is okay too */
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+    color: #534340;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+}
+.tab.active {
+    background-color: #FFDAD2;
+    
+}
+/* Give each tab its own width from your design */
+.tab:nth-child(1) { width: 67px; }
+.tab:nth-child(2) { width: 85px; }
+.tab:nth-child(3) { width: 115px; }
+
+/* Task list container (Frame 3 / "Task List") */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+    /* height: 1152px; If you need fixed height, but usually better to let content dictate height */
+}
+
+/* Single Task container */
+.task {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+/* The row that holds check, title, user block, etc. */
+.main_section {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* "flex-start" in design, but center might look better */
+    gap: 16px;
+    width: 100%;
+    min-height: 48px; /* or 48px if you want to match the design exactly */
+}
+
+.text_block {
+  display: flex;
+  flex-direction: row; /* They appear on the same row */
+  align-items: center; /* or flex-start, if you prefer */
+  justify-content: space-between; /* space out the title and the user */
+  gap: 16px;
+  width: 100%; /* Expand to fill the remaining space */
+}
+
+/* Check (the circle or completed circle) */
+.check {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #85736F; /* "outline" from your snippet */
+    border-radius: 50%;
+    background: transparent; /* If undone, transparent. If done, #904B3B or #FFDAD2. */
+    box-sizing: border-box;
+    cursor: pointer;
+}
+/* A variation if the task is completed:  */
+.check.completed {
+    background: #904B3B;
+    border: 1px solid #904B3B;
+} 
+/* Then put a check icon inside, etc. */
+
+
+/* The title text */
+.title {
+    flex: 1; /* Takes up remaining space */
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #231917;
+    /* If completed, color can change to #723426 with background #FFDAD2, etc. */
+}
+
+/* User badge (Frame "user") */
+.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 12px;
+    background: #FFF0ED;
+    border: 1px solid #D8C2BD;
+    border-radius: 4px;
+    height: 40px;
+    box-sizing: border-box;
+}
+.user .image {
+    width: 28px;
+    height: 28px;
+    border-radius: 100px;
+    background: url('../images/1.png');
+    /* placeholder for user avatar */
+}
+.user_ID {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #231917;
+}
+
+/* Divider line between tasks */
+.divider {
+    width: 100%;
+    height: 1px;
+    border: none;
+    background-color: #D8C2BD; /* outline_variant */
+}
+
+.check.completed::after {
+    content: url('../svg/correct.svg'); /* or an svg icon */
+    color: #FFDAD2;
+    font-size: 14px;
+}
+
+/* Variation for a completed title row */
+.title.completed {
+    /* background-color: #FFDAD2; primary_container */
+    color: #723426;           /* on_primary_container */
+}
+
+/* "Load more" container */
+.load_more {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 32px;
+    background: #FFF8F6;
+}
+
+/* Load More Button styles */
+#load-more {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}
+
+.load_more:hover{
+  background: #FFF0ED;
+
+}
+.load_more:hover img {
+  filter: brightness(0) saturate(100%) invert(22%) sepia(78%) saturate(454%) hue-rotate(325deg) brightness(94%) contrast(95%);
+}
+#load-more:hover .load_more_text {
+  color: #723426;
+}
+
+.arrow_icon {
+    width: 24px;
+    height: 24px;
+
+    background: no-repeat center/contain;
+    font-size: 24px;
+    line-height: 24px;
+    color: #231917;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.load_more_text {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #231917;
+}
+
+/* ---------- Mobile Styles (example for screens up to 480px wide) ---------- */
+@media screen and (max-width: 480px) {
+
+  /* --------------------------- */
+  /* Container (ALL)            */
+  /* --------------------------- */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    height: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  /* --------------------------- */
+  /* Header Section              */
+  /* --------------------------- */
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 24px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* “Task list & Buttons” row */
+  .header .task-title {
+    /* If your .task-title sits next to buttons in a row, you might need
+       a parent container with display:flex. Adapt as needed. */
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 36px; /* identical to box height from your design */
+    color: #534340;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  /* Buttons next to "Task list" (if you have them in the header) */
+  /* If you do not have actual .button elements in the header, remove these. */
+  .header .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 120px;
+    width: 313px;
+    height: 36px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* Example for each button inside .buttons */
+  .header .buttons .button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  /* Icon inside the button */
+  .header .buttons .button .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* If you have a text label inside the button */
+  .header .buttons .button .label-text {
+    display: none;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+    color: #904B3B;
+  }
+
+  .empty {
+    /* Simplify the design? Just center a single tumbleweed icon & a short message. */
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* --------------------------- */
+  /* Tabs                        */
+  /* --------------------------- */
+  .tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+    width: 313px;
+    height: 40px;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 100px;
+  }
+
+  /* --------------------------- */
+  /* Task List Container         */
+  /* --------------------------- */
+  #task-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+    width: 313px;
+    height: auto; 
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* --------------------------- */
+  /* Single Task                 */
+  /* --------------------------- */
+  .task {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+    width: 313px;
+    height: auto; 
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* The .main_section within a .task */
+  .main_section {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+    width: 313px;
+    height: auto;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* The check (circle) inside a task */
+  .check {
+    box-sizing: border-box;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #85736F;
+    background: transparent;
+  }
+
+  .text_block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+    width: 273px;
+  }
+
+  /* Title inside each task */
+  .title {
+    width: 100%;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #231917;
+    /* If completed, your snippet says color: #723426; background: #FFDAD2, etc. */
+  }
+
+  /* The user block */
+  .user {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 12px;
+    /* width: 140px;    or your snippet’s 133, 136, etc. — unify them. */
+    height: 40px;
+    background: #FFF0ED;
+    border: 1px solid #D8C2BD;
+    border-radius: 4px;
+  }
+
+  /* The user’s avatar image */
+  .user .image {
+    width: 28px;
+    height: 28px;
+    background: url('../images/1.png'); /* or dynamic if needed */
+  }
+
+  /* The user’s ID text */
+  .user .user_ID {
+    width: auto;  /* The snippet sets it to e.g., 62px, 70px, etc. */
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #231917;
+  }
+
+  /* Divider inside each task */
+  .divider {
+    width: 313px;
+    height: 0px;
+    border: 1px solid #D8C2BD;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  /* --------------------------- */
+  /* Load More                   */
+  /* --------------------------- */
+  .load_more {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4px;
+    gap: 10px;
+    width: 313px;
+    height: 32px;
+    background: #FFF8F6;
+    border-radius: 4px;
+    flex: none;
+    order: 15;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  #load-more {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+    width: 106px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  #load-more .arrow_icon {
+    width: 24px;
+    height: 24px;
+    color: #231917;
+  }
+
+  #load-more .load_more_text {
+    width: auto;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #231917;
+  }
+
+  .load_more:hover{
+    background: #FFF0ED;
+  
+  }
+  .load_more:hover img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(78%) saturate(454%) hue-rotate(325deg) brightness(94%) contrast(95%);
+  }
+  #load-more:hover .load_more_text {
+    color: #723426;
+  }
+}
+
+  
