@@ -23,7 +23,7 @@ help:  ## Show this help message
 ## -----------------------------
 
 build:  ## Build Docker images
-	docker-compose -f $(DOCKER_COMPOSE_FILE) build
+	docker-compose -f $(DOCKER_COMPOSE_FILE) build --no-cache
 
 up:  ## Run containers in the background
 	docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
