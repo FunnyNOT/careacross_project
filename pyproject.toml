@@ -1,33 +1,31 @@
-[project]
-package-mode = false
-
+[tool.poetry]
 name = "careacross-project"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Leonidas",email = "leonidas.oikonomou17@gmail.com"}
-]
+description = "Your description here"
+authors = ["Leonidas <leonidas.oikonomou17@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "django (>=4.2,<5.0)",
-    "python-decouple (>=3.8,<4.0)",
-    "dj-database-url (>=2.3.0,<3.0.0)",
-    "psycopg2-binary (>=2.9.10,<3.0.0)",
-    "requests (>=2.32.3,<3.0.0)"
-]
 
+# Dependencies
+[tool.poetry.dependencies]
+python = ">=3.11"
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+# Your main requirements
+django = ">=4.2,<5.0"
+python-decouple = ">=3.8,<4.0"
+dj-database-url = ">=2.3.0,<3.0.0"
+psycopg2-binary = ">=2.9.10,<3.0.0"
+requests = ">=2.32.3,<3.0.0"
 
+# Dev dependencies (requires Poetry 1.2+ for `group.dev`)
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
 isort = "^6.0.0"
 ruff = "^0.9.5"
 
 
+# -------------------------------
+# Lint/format configs
+# -------------------------------
 [tool.black]
 line-length = 88
 target-version = ['py311']
@@ -53,8 +51,16 @@ indent-style = "space"
 line-ending = "lf"
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]  # Enable common error and import sorting checks
-ignore = ["E501"]  # Ignore line-length errors since Black handles it
+select = ["E", "F", "I"]  # common error and import-sorting checks
+ignore = ["E501"]         # let Black handle line lengths
 
 [tool.ruff.lint.isort]
-known-first-party = ["your_project_name"]
+known-first-party = ["careacross_project"]
+
+
+# -------------------------------
+# Build system
+# -------------------------------
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
