@@ -21,13 +21,28 @@ The project is built using:
 
 The project uses **Docker Compose** and a **Makefile** for easy setup. To install and run the project locally:
 
-1. **Clone the repository:**
+### Prerequisites
+
+
+#### All tests were done on **Ubuntu 24.04**. If you need any assistance please do let me know via email.
+
+  1.  ```Docker```
+  2.  ```Docker - Compose```
+  3.  ```Python 3.11^```
+  4.  ```Python 3 setuptools```
+  5.  ```Make```  For easier access to commands using the Makefile in the root of the project
+  6.  ```.env values``` Granted via email request
+
+
+### 
+
+2. **Clone the repository:**
    ```sh
-   git clone https://github.com/FunnyNOT/careacross-project.git
-   cd careacross-project
+   git clone https://github.com/FunnyNOT/careacross_project.git
+   cd careacross_project
    ```
 
-2. **Set up environment variables:**
+3. **Set up environment variables:**
 
    ##### Copy the example .env file:
     ```sh
@@ -60,12 +75,13 @@ The project uses **Docker Compose** and a **Makefile** for easy setup. To instal
 ## 📌 Usage Instructions
 Once the project is running:
 
-View Todos → Access the UI to see all todos categorized as:
+View Todos → Access the UI to see all todos categorized here:
+```http://localhost:8000/```
 
 ## All Todos
-Completed Todos
-Pending Todos
-Update Todos → Change the completed status of any todo.
+1. Completed Todos
+2. Pending Todos
+3. Update Todos → Change the completed status of any todo.
 
 ## 🧪 Running Tests
 To run the test suite:
