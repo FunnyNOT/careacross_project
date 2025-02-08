@@ -1,6 +1,8 @@
 from unittest.mock import patch
+import json
+import uuid
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 
 from todos.models import Todo
@@ -203,3 +205,134 @@ class TodoListViewTest(TestCase):
         # Should get all 3
         self.assertEqual(todos.count(), 3)
         self.assertEqual(response.context["current_filter"], "all")
+
+
+
+class ToggleTodoCompletionTests(TestCase):
+    """Test suite for the toggle_todo_completion view."""
+
+    def setUp(self) -> None:
+        """
+        Create a Django test client and a sample Todo object.
+        We'll manipulate this Todo in different tests.
+        """
+        self.client = Client()
+        self.url = reverse("toggle_todo")
+
+        # Create a Todo item for testing.
+        self.todo = Todo.objects.create(
+            api_id=999, 
+            title="Test Todo", 
+            completed=False, 
+            user_id=1
+        )
+
+    def test_toggle_todo_successful(self) -> None:
+        """
+        Ensure that a valid POST request with a correct 'todo_id'
+        toggles the 'completed' status of the Todo.
+        """
+        payload = {"todo_id": str(self.todo.uuid)}  # Must be a string for JSON serializing
+        response = self.client.post(
+            self.url, 
+            data=json.dumps(payload), 
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Check JSON response.
+        data = response.json()
+        self.assertTrue(data["success"])
+        self.assertIn("completed", data)
+        self.assertTrue(data["completed"])  # The todo was initially False, should now be True.
+
+        # Refresh from DB and confirm it actually toggled.
+        self.todo.refresh_from_db()
+        self.assertTrue(self.todo.completed)
+
+    def test_missing_todo_id(self) -> None:
+        """
+        Sending a POST request without 'todo_id' should return a 400 status
+        and an appropriate error message.
+        """
+        payload = {}  # Missing 'todo_id'
+        response = self.client.post(
+            self.url, 
+            data=json.dumps(payload), 
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        data = response.json()
+        self.assertFalse(data["success"])
+        self.assertIn("error", data)
+        self.assertEqual(data["error"], "Missing todo_id")
+
+    def test_todo_not_found(self) -> None:
+        """
+        Providing a 'todo_id' that doesn't exist in the database
+        should return a 404 status and an appropriate error message.
+        """
+        fake_uuid = str(uuid.uuid4())  # Random UUID not in the database
+        payload = {"todo_id": fake_uuid}
+        response = self.client.post(
+            self.url, 
+            data=json.dumps(payload), 
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
+        
+        data = response.json()
+        self.assertFalse(data["success"])
+        self.assertIn("error", data)
+        self.assertEqual(data["error"], "Todo not found")
+
+    def test_invalid_json(self) -> None:
+        """
+        Providing invalid JSON data in the body (e.g., a string that
+        cannot be parsed as JSON) should return a 400 status with an error.
+        """
+        invalid_payload = "This is not valid JSON"
+        response = self.client.post(
+            self.url, 
+            data=invalid_payload, 
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        
+        data = response.json()
+        self.assertFalse(data["success"])
+        self.assertIn("error", data)
+        self.assertEqual(data["error"], "Invalid JSON")
+
+    def test_method_not_allowed(self) -> None:
+        """
+        The view is decorated with @require_http_methods(["POST"]).
+        Sending a GET request should return a 405 (Method Not Allowed).
+        """
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)  # By default, Django returns 405 for require_http_methods violations.
+
+    @patch("todos.views.logger.exception")
+    def test_unexpected_exception(self, mock_logger) -> None:
+        """
+        Simulate an unexpected exception inside the view (e.g., DB error).
+        We'll patch the 'Todo.objects.get' to raise an Exception,
+        then verify we handle it gracefully.
+        """
+        with patch("todos.models.Todo.objects.get", side_effect=Exception("Something went wrong")):
+            payload = {"todo_id": str(self.todo.uuid)}
+            response = self.client.post(
+                self.url, 
+                data=json.dumps(payload), 
+                content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 400)
+
+            data = response.json()
+            self.assertFalse(data["success"])
+            self.assertIn("error", data)
+            self.assertEqual(data["error"], "Something went wrong")
+
+            # Ensure our logger.exception was called.
+            mock_logger.assert_called_once()
