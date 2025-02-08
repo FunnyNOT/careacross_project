@@ -70,5 +70,5 @@ lint:  ## Run Ruff inside the backend container
 
 format_lint: format lint  ## Run format and lint in one go
 
-test:  ## Run Ruff inside the backend container
+test:  ## Run tests inside the backend container
 	docker-compose -f $(DOCKER_COMPOSE_FILE) exec careacross-backend poetry run python manage.py test
