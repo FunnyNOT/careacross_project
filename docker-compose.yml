@@ -4,8 +4,8 @@ services:
       context: ./
       dockerfile: Dockerfile.dev
       args:
-        - USER_ID=1000  # Replace with your host user's UID (run `id -u` to check)
-        - GROUP_ID=1000 # Replace with your host user's GID (run `id -g` to check)
+        - USER_ID=1000 
+        - GROUP_ID=1000
     container_name: careacross-backend
     env_file:
       - .env
@@ -22,9 +22,9 @@ services:
     image: postgres:16.4
     container_name: careacross-postgres
     environment:
-      POSTGRES_DB: careacross_db
-      POSTGRES_USER: careacross_admin
-      POSTGRES_PASSWORD: careacross_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
