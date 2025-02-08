@@ -130,15 +130,6 @@ The project includes a Makefile for simplified development tasks:
 | make test             | Run Django tests|
 
 
-
-## 🚀 Deployment Instructions
-This project is not deployed yet, but to deploy it, you would need:
-
-1. A production-ready Dockerfile (different from the current development version).
-2. A PostgreSQL database instance (e.g., AWS RDS, Azure PostgreSQL, or self-hosted).
-3. A production-ready server (e.g., AWS, DigitalOcean, or self-hosted VPS).
-4. A CI/CD pipeline for automated deployments.
-
 ## 📏 Code Style & Linting
 The project follows PEP8 and uses:
 
@@ -151,7 +142,42 @@ The project follows PEP8 and uses:
     make format_lint
     ```
 
-👨‍💻 Author & Contact
-Project created by Leonidas Oikonomou.
+## 🚀 Improvements & Future Work
+
+While the project meets its current requirements, there are several areas for future improvements and enhancements:
+
+### Testing & Code Quality
+
+  1. Enhanced Test Coverage: Increase unit and integration tests to cover more edge cases, including error handling and retry logic.
+  2. Automated CI/CD: Integrate continuous integration (CI) tools (e.g., GitHub Actions, GitLab CI) to automate testing, linting, and code formatting on every push.
+  3. Error Handling & Logging
+
+### Production-Ready Server: 
+
+   1. Transition from Django’s development server to a production-ready WSGI/ASGI server (e.g., Gunicorn, Daphne, or Uvicorn) for better performance.
+   2. Separate Production Docker Configuration: Create a production Dockerfile and corresponding Compose configurations that include performance optimizations and security enhancements.
+   3. User Interface & User Experience
+
+### Enhanced Frontend: 
+
+  1. Consider improving the UI/UX with a modern frontend framework (e.g., React, Vue) or by refining the existing HTML/CSS/JS.
+  2. Accessibility & Responsiveness: Enhance the application’s design to ensure it is fully accessible and responsive across devices.
+
+### Security
+
+1. Security Hardening: Regularly review and update dependencies, enforce secure coding practices, and perform vulnerability scans.
+2. Environment Configuration: Use secrets management tools (or Docker secrets) to secure sensitive environment variables in production.
+
+
+### Documentation
+
+1. Detailed Developer Guide: Expand the documentation to include more details on the project architecture, development workflows, and troubleshooting common issues.
+2. API Documentation: Provide clear documentation for any external or internal APIs, possibly with tools like Swagger or Redoc.
+
+
+---
+
+### 👨‍💻 Author & Contact
+**Project created by Leonidas Oikonomou.**
 📧 Email: leonidas.oikonomou17@gmail.com
 🌍 GitHub: [FunnyNOT](https://github.com/FunnyNOT)
