@@ -1,7 +1,10 @@
+import json
 import logging
 from typing import Any, Dict
 
 from django.db.models import QuerySet
+from django.http import HttpRequest, JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView
 
 from todos.helpers import get_external_todo_data
@@ -106,3 +109,44 @@ class TodoListView(ListView):
         if context["current_filter"] not in {"todo", "complete", "all"}:
             context["current_filter"] = "all"
         return context
+
+
+@require_http_methods(["POST"])
+def toggle_todo_completion(request: HttpRequest) -> JsonResponse:
+    """
+    Toggle the completion status of a Todo item.
+
+    This view expects a JSON body with the key "todo_id" mapping to the UUID of an
+    existing Todo item. When called, it flips the `completed` status of that Todo.
+
+    Args:
+        request (HttpRequest): The HTTP request object. Must be a POST request containing JSON data.
+
+    Returns:
+        JsonResponse: A JSON response indicating whether the operation was successful.
+            - `{"success": True, "completed": <bool>}` if successful.
+            - `{"success": False, "error": <message>}` otherwise.
+    """
+    try:
+        data = json.loads(request.body)
+        todo_id = data.get("todo_id")
+
+        if not todo_id:
+            return JsonResponse(
+                {"success": False, "error": "Missing todo_id"}, status=400
+            )
+
+        todo = Todo.objects.get(uuid=todo_id)
+        todo.completed = not todo.completed  # Toggle the completion status
+        todo.save()
+        return JsonResponse({"success": True, "completed": todo.completed})
+
+    except Todo.DoesNotExist:
+        logger.warning("Attempted to toggle a Todo that does not exist.")
+        return JsonResponse({"success": False, "error": "Todo not found"}, status=404)
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON data in request.")
+        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
+    except Exception as e:
+        logger.exception("Unexpected error toggling Todo completion.")
+        return JsonResponse({"success": False, "error": str(e)}, status=400)

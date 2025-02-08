@@ -4,6 +4,7 @@ from todos import views
 
 urlpatterns = [
     path("", views.TodoListView.as_view(), name="todo_list"),
+    path("toggle-todo/", views.toggle_todo_completion, name="toggle_todo"),
 ]
 
 # Register custom error handlers

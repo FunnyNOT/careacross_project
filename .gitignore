@@ -4,9 +4,6 @@
 
 **/.venv
 
-# Node modules
-**/node_modules
-
 # Python cache
 **/__pycache__
 **/.mypy_cache
