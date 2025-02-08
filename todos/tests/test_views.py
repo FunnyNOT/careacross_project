@@ -1,8 +1,8 @@
-from unittest.mock import patch
 import json
 import uuid
+from unittest.mock import patch
 
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from todos.models import Todo
@@ -207,7 +207,6 @@ class TodoListViewTest(TestCase):
         self.assertEqual(response.context["current_filter"], "all")
 
 
-
 class ToggleTodoCompletionTests(TestCase):
     """Test suite for the toggle_todo_completion view."""
 
@@ -221,10 +220,7 @@ class ToggleTodoCompletionTests(TestCase):
 
         # Create a Todo item for testing.
         self.todo = Todo.objects.create(
-            api_id=999, 
-            title="Test Todo", 
-            completed=False, 
-            user_id=1
+            api_id=999, title="Test Todo", completed=False, user_id=1
         )
 
     def test_toggle_todo_successful(self) -> None:
@@ -232,11 +228,11 @@ class ToggleTodoCompletionTests(TestCase):
         Ensure that a valid POST request with a correct 'todo_id'
         toggles the 'completed' status of the Todo.
         """
-        payload = {"todo_id": str(self.todo.uuid)}  # Must be a string for JSON serializing
+        payload = {
+            "todo_id": str(self.todo.uuid)
+        }  # Must be a string for JSON serializing
         response = self.client.post(
-            self.url, 
-            data=json.dumps(payload), 
-            content_type="application/json"
+            self.url, data=json.dumps(payload), content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
 
@@ -244,7 +240,9 @@ class ToggleTodoCompletionTests(TestCase):
         data = response.json()
         self.assertTrue(data["success"])
         self.assertIn("completed", data)
-        self.assertTrue(data["completed"])  # The todo was initially False, should now be True.
+        self.assertTrue(
+            data["completed"]
+        )
 
         # Refresh from DB and confirm it actually toggled.
         self.todo.refresh_from_db()
@@ -257,12 +255,10 @@ class ToggleTodoCompletionTests(TestCase):
         """
         payload = {}  # Missing 'todo_id'
         response = self.client.post(
-            self.url, 
-            data=json.dumps(payload), 
-            content_type="application/json"
+            self.url, data=json.dumps(payload), content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
-        
+
         data = response.json()
         self.assertFalse(data["success"])
         self.assertIn("error", data)
@@ -276,12 +272,10 @@ class ToggleTodoCompletionTests(TestCase):
         fake_uuid = str(uuid.uuid4())  # Random UUID not in the database
         payload = {"todo_id": fake_uuid}
         response = self.client.post(
-            self.url, 
-            data=json.dumps(payload), 
-            content_type="application/json"
+            self.url, data=json.dumps(payload), content_type="application/json"
         )
         self.assertEqual(response.status_code, 404)
-        
+
         data = response.json()
         self.assertFalse(data["success"])
         self.assertIn("error", data)
@@ -294,12 +288,10 @@ class ToggleTodoCompletionTests(TestCase):
         """
         invalid_payload = "This is not valid JSON"
         response = self.client.post(
-            self.url, 
-            data=invalid_payload, 
-            content_type="application/json"
+            self.url, data=invalid_payload, content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
-        
+
         data = response.json()
         self.assertFalse(data["success"])
         self.assertIn("error", data)
@@ -311,7 +303,9 @@ class ToggleTodoCompletionTests(TestCase):
         Sending a GET request should return a 405 (Method Not Allowed).
         """
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 405)  # By default, Django returns 405 for require_http_methods violations.
+        self.assertEqual(
+            response.status_code, 405
+        )
 
     @patch("todos.views.logger.exception")
     def test_unexpected_exception(self, mock_logger) -> None:
@@ -320,12 +314,13 @@ class ToggleTodoCompletionTests(TestCase):
         We'll patch the 'Todo.objects.get' to raise an Exception,
         then verify we handle it gracefully.
         """
-        with patch("todos.models.Todo.objects.get", side_effect=Exception("Something went wrong")):
+        with patch(
+            "todos.models.Todo.objects.get",
+            side_effect=Exception("Something went wrong"),
+        ):
             payload = {"todo_id": str(self.todo.uuid)}
             response = self.client.post(
-                self.url, 
-                data=json.dumps(payload), 
-                content_type="application/json"
+                self.url, data=json.dumps(payload), content_type="application/json"
             )
             self.assertEqual(response.status_code, 400)
 

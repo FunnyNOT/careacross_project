@@ -1,9 +1,8 @@
 from unittest import mock
-from unittest.mock import patch, MagicMock
-
-from django.test import TestCase
+from unittest.mock import MagicMock, patch
 
 import requests
+from django.test import TestCase
 
 from todos.helpers import fetch_todos_from_api, get_external_todo_data
 from todos.models import Todo
@@ -39,7 +38,9 @@ class FetchTodosFromApiTests(TestCase):
         mock_session_instance.get.assert_called_once_with(self.url, timeout=10)
 
     @patch("todos.helpers.todo_list_view_helper.requests.Session")
-    def test_fetch_todos_raises_exception_on_http_error(self, mock_session: MagicMock) -> None:
+    def test_fetch_todos_raises_exception_on_http_error(
+        self, mock_session: MagicMock
+    ) -> None:
         """
         Test that fetch_todos_from_api raises a RequestException if response.raise_for_status() fails
         (e.g., 4xx or 5xx after all retries).
@@ -92,7 +93,6 @@ class FetchTodosFromApiTests(TestCase):
         mock_session_instance.get.assert_called_once_with(self.url, timeout=10)
 
 
-
 class GetExternalTodoDataTests(TestCase):
     """Test suite for the get_external_todo_data helper function."""
 
@@ -105,7 +105,9 @@ class GetExternalTodoDataTests(TestCase):
 
     @patch("todos.helpers.todo_list_view_helper.config")
     @patch("todos.helpers.todo_list_view_helper.fetch_todos_from_api")
-    def test_successful_data_fetch(self, mock_fetch: MagicMock, mock_config: MagicMock) -> None:
+    def test_successful_data_fetch(
+        self, mock_fetch: MagicMock, mock_config: MagicMock
+    ) -> None:
         """
         Test that get_external_todo_data creates Todo objects in the DB
         when the external API call returns valid data.
@@ -131,7 +133,9 @@ class GetExternalTodoDataTests(TestCase):
 
     @patch("todos.helpers.todo_list_view_helper.config")
     @patch("todos.helpers.todo_list_view_helper.fetch_todos_from_api", return_value=[])
-    def test_empty_data_returns_none(self, mock_fetch: MagicMock, mock_config: MagicMock) -> None:
+    def test_empty_data_returns_none(
+        self, mock_fetch: MagicMock, mock_config: MagicMock
+    ) -> None:
         """
         If the external API returns an empty list, the function should not
         create any objects and should return None.
@@ -144,9 +148,14 @@ class GetExternalTodoDataTests(TestCase):
         mock_fetch.assert_called_once()
 
     @patch("todos.helpers.todo_list_view_helper.config")
-    @patch("todos.helpers.todo_list_view_helper.fetch_todos_from_api", side_effect=Exception("API error"))
+    @patch(
+        "todos.helpers.todo_list_view_helper.fetch_todos_from_api",
+        side_effect=Exception("API error"),
+    )
     @patch("todos.helpers.todo_list_view_helper.logger")
-    def test_fetch_error_logs_and_returns_none(self, mock_logger: MagicMock, mock_fetch: MagicMock, mock_config: MagicMock) -> None:
+    def test_fetch_error_logs_and_returns_none(
+        self, mock_logger: MagicMock, mock_fetch: MagicMock, mock_config: MagicMock
+    ) -> None:
         """
         If fetching data fails (e.g., raises an exception), we log the error and return None.
         """
@@ -158,18 +167,23 @@ class GetExternalTodoDataTests(TestCase):
         mock_fetch.assert_called_once()
         # Ensure logger.error was called
         mock_logger.error.assert_called_once()
-        self.assertIn("Error fetching todos from external API", mock_logger.error.call_args[0][0])
+        self.assertIn(
+            "Error fetching todos from external API", mock_logger.error.call_args[0][0]
+        )
 
     @patch("todos.helpers.todo_list_view_helper.config")
     @patch("todos.helpers.todo_list_view_helper.fetch_todos_from_api")
     @patch("todos.helpers.todo_list_view_helper.random.randint", return_value=5)
-    def test_random_user_image_is_assigned(self, mock_randint: MagicMock, mock_fetch: MagicMock, mock_config: MagicMock) -> None:
+    def test_random_user_image_is_assigned(
+        self, mock_randint: MagicMock, mock_fetch: MagicMock, mock_config: MagicMock
+    ) -> None:
         """
         Test that each new user gets a random image assigned, and that the same user
         in the same payload gets the same image.
         """
         mock_config.return_value = "http://fakeurl.com"
         mock_fetch.return_value = self.test_todos_payload
+
         # Force random.randint to return 5 for the first user call, then something else for the second
         def randint_side_effect(low, high):
             # userId=1 is first encountered -> returns 5
@@ -192,18 +206,20 @@ class GetExternalTodoDataTests(TestCase):
 
         # Both user 1 items should have image=5
         for t in todos_user_1:
-            self.assertEqual(t.image, '5')
+            self.assertEqual(t.image, "5")
 
         # user 2 item should have image=3
         for t in todos_user_2:
-            self.assertEqual(t.image, '3')
+            self.assertEqual(t.image, "3")
 
         # We expected random.randint to be called exactly 2 times (for 2 distinct userIds)
         self.assertEqual(mock_randint.call_count, 2)
 
     @patch("todos.helpers.todo_list_view_helper.config")
     @patch("todos.helpers.todo_list_view_helper.fetch_todos_from_api")
-    def test_same_user_image_consistency(self, mock_fetch: MagicMock, mock_config: MagicMock) -> None:
+    def test_same_user_image_consistency(
+        self, mock_fetch: MagicMock, mock_config: MagicMock
+    ) -> None:
         """
         Another approach to confirm the same user ID retains the same image
         within one API fetch, even if random has multiple calls.
@@ -221,7 +237,9 @@ class GetExternalTodoDataTests(TestCase):
 
         # All belong to the same user => must have the same 'image'.
         images = set(todo.image for todo in user1_todos)
-        self.assertEqual(len(images), 1, "All todos for the same user should share the same image")
+        self.assertEqual(
+            len(images), 1, "All todos for the same user should share the same image"
+        )
 
     @patch("todos.helpers.todo_list_view_helper.config")
     def test_missing_todo_api_url(self, mock_config: MagicMock) -> None:
